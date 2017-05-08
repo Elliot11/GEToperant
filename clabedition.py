@@ -4,7 +4,7 @@ import re
 import itertools
 #outputfile = asksaveasfilename(title = 'Save output file as', defaultextension='.xlsx', filetypes=(('Excel', '*.xlsx'),('All Files', '*.*')))
 
-def GETpav02():
+def GETpav02(exportfilename, exportstartdate, exportenddate, exportsubject, exportexperiment, exportgroup, exportbox, exportstarttime, exportendtime, exportmsn):
     MPCdatafiles = askopenfilenames(title = 'Select files to import')
     outputdir = askdirectory(title = 'Select directory to save exported files to')
     for f in range(len(MPCdatafiles)):
@@ -206,7 +206,7 @@ def GETpav02():
                     delayresponse = delayresponse + 1
 
                 ### Check for a response after the current trial.
-                elif float(K[i][response]) > (CSstarts[-1] + 2 * CSseconds) or float(K[i][response]) > (CSstarts[trial] + 2 * CSseconds):
+                elif float(K[i][response]) >= (CSstarts[-1] + 2 * CSseconds) or float(K[i][response]) >= (CSstarts[trial] + 2 * CSseconds):
                     if trial == len(I[i]) - 2:
                         trial = trial + 1
                         ITIresponses[trial] = ITIresponses[trial] + 1
@@ -215,7 +215,7 @@ def GETpav02():
                         ITIresponses[trial] = ITIresponses[trial] + 1
                         ITIdurations[trial] = ITIdurations[trial] + float(L[i][response])
                     elif trial < len(I[i]) - 2:
-                        while float(K[i][response]) > (CSstarts[trial] + 2 * CSseconds) and trial < len(I[i]) - 2:
+                        while float(K[i][response]) >= (CSstarts[trial] + 2 * CSseconds) and trial < len(I[i]) - 2:
                             trial = trial + 1                          
                         ### Check if this response also needs to be binned
                         if float(K[i][response]) < PreCSstarts[trial]:
@@ -236,6 +236,10 @@ def GETpav02():
                             PostCSduration[trial] = PostCSduration[trial] + float(L[i][response])
                             if PostCSlatency[trial] >= CSseconds:
                                 PostCSlatency[trial] = float(K[i][response]) - PostCSstarts[trial]
+                        elif float(K[i][response]) >= (CSstarts[-1] + 2 * CSseconds):
+                            trial = len(I[i]) - 1
+                            ITIresponses[trial] = ITIresponses[trial] + 1
+                            ITIdurations[trial] = ITIdurations[trial] + float(L[i][response])
                 ### Bin the responses normally
                 elif float(K[i][response]) < PreCSstarts[trial]:
                     ITIresponses[trial] = ITIresponses[trial] + 1
@@ -487,46 +491,66 @@ def GETpav02():
         mainsheet = output.add_worksheet('GEToperant output')
         mainsheet.set_column('A:A', 23)
 
-        mainsheet.write(0, 0, 'Filename')
-        mainsheet.write(0, 1, Filename)
+        lastrow = -1
 
-        mainsheet.write(1, 0, 'Start Date')
-        for i in range(len(Startdate)):
-            mainsheet.write(1, i+1, Startdate[i])
+        if exportfilename == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'Filename')
+            mainsheet.write(lastrow, 1, Filename)
 
-        mainsheet.write(2, 0, 'End Date')
-        for i in range(len(Enddate)):
-            mainsheet.write(2, i+1, Enddate[i])
+        if exportstartdate == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'Start Date')
+            for i in range(len(Startdate)):
+                mainsheet.write(lastrow, i+1, Startdate[i])
 
-        mainsheet.write(3, 0, 'Subject')
-        for i in range(len(Subject)):
-            mainsheet.write(3, i+1, Subject[i])
+        if exportenddate == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'End Date')
+            for i in range(len(Enddate)):
+                mainsheet.write(lastrow, i+1, Enddate[i])
 
-        mainsheet.write(4, 0, 'Experiment')
-        for i in range(len(Subject)):
-            mainsheet.write(4, i+1, Experiment[i])
+        if exportsubject == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'Subject')
+            for i in range(len(Subject)):
+                mainsheet.write(lastrow, i+1, Subject[i])
 
-        mainsheet.write(5, 0, 'Group')
-        for i in range(len(Group)):
-            mainsheet.write(5, i+1, Group[i])
+        if exportexperiment == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'Experiment')
+            for i in range(len(Subject)):
+                mainsheet.write(lastrow, i+1, Experiment[i])
 
-        mainsheet.write(6, 0, 'Box')
-        for i in range(len(Box)):
-            mainsheet.write(6, i+1, float(Box[i]))
+        if exportgroup == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'Group')
+            for i in range(len(Group)):
+                mainsheet.write(lastrow, i+1, Group[i])
 
-        mainsheet.write(7, 0, 'Start Time')
-        for i in range(len(Starttime)):
-            mainsheet.write(7, i+1, Starttime[i])
+        if exportbox == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'Box')
+            for i in range(len(Box)):
+                mainsheet.write(lastrow, i+1, float(Box[i]))
 
-        mainsheet.write(8, 0, 'End Time')
-        for i in range(len(Endtime)):
-            mainsheet.write(8, i+1, Endtime[i])
+        if exportstarttime == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'Start Time')
+            for i in range(len(Starttime)):
+                mainsheet.write(lastrow, i+1, Starttime[i])
 
-        mainsheet.write(9, 0, 'MSN')
-        for i in range(len(MSN)):
-            mainsheet.write(9, i+1, MSN[i])
+        if exportendtime == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'End Time')
+            for i in range(len(Endtime)):
+                mainsheet.write(lastrow, i+1, Endtime[i])
 
-        lastrow = 9
+        if exportmsn == 1:
+            lastrow = lastrow + 1
+            mainsheet.write(lastrow, 0, 'MSN')
+            for i in range(len(MSN)):
+                mainsheet.write(lastrow, i+1, MSN[i])
 
         for i in range(len(Label)):
             ### This function will loop over the profile. For each label it will check if it is

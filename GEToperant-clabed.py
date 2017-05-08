@@ -48,6 +48,18 @@ def GETexpress():
                               exportstarttime = Header_StartTime.get(),
                               exportendtime = Header_EndTime.get(),
                               exportmsn = Header_MSN.get())
+
+def runclab():
+    clabedition.GETpav02(exportfilename = Header_Filename.get(),
+                              exportstartdate = Header_StartDate.get(),
+                              exportenddate = Header_EndDate.get(),
+                              exportsubject = Header_Subject.get(),
+                              exportexperiment = Header_Experiment.get(),
+                              exportgroup = Header_Group.get(),
+                              exportbox = Header_Box.get(),
+                              exportstarttime = Header_StartTime.get(),
+                              exportendtime = Header_EndTime.get(),
+                              exportmsn = Header_MSN.get())
 def helpme():
     helpwindow = Toplevel()
     helpwindow.title('How to use GEToperant')
@@ -209,7 +221,7 @@ root = Tk()
 
 ##Set window size
 root.geometry('876x500')
-root.title('GEToperant Chaudhri Lab Edition v 0.91')
+root.title('GEToperant Chaudhri Lab Edition v 1.00')
 Montre = PhotoImage(file='icon.pnm')
 root.wm_iconphoto('True', Montre)
 
@@ -273,7 +285,7 @@ class App:
         self.MPCdatafiles.grid(row = 0, column = 2, padx = 15, sticky = W)
         self.execall = Button(frame, text = 'Select save file data', command = saveoutput, font=('Verdana', 9))
         self.execall.grid(row = 0, column = 3, padx = 15, sticky = W)
-        self.clabed = Button(frame, text = 'Pav02 Batch Export', command = clabedition.GETpav02, font=('Verdana', 9))
+        self.clabed = Button(frame, text = 'Pav02 Batch Export', command = runclab, font=('Verdana', 9))
         self.clabed.grid(row = 1, column = 0, padx = 15, sticky = W)
         self.exit = Button(frame, text = 'Quit', command = quit, font=('Verdana', 9))
         self.exit.grid(row = 1, column = 3, sticky = E, padx = 15, pady = 30)
